@@ -52,7 +52,6 @@ class MainWindow(QMainWindow):
     self.setCentralWidget(self.tabsContainer)
     self.setStatusBar(self.statusBar)
     self.show()
-    self.tabsContainer.setCurrentIndex(3) ########### TO REMOVE ################
   
   def AboutTab(self):
     import webbrowser
