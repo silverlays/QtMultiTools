@@ -5,7 +5,9 @@ from PyQt5.QtCore import *
 from variables import widgetMargins, TextShadow
 
 
-class Resolutions(QWidget):
+tabDescription = "Résolutions par ratio d'aspect"
+
+class TabWidget(QWidget):
   def __init__(self):
     super().__init__()
     

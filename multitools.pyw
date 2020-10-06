@@ -6,36 +6,21 @@ from PyQt5.QtCore import *
 from QtDarkTheme import QtDarkTheme
 from variables import TextShadow
 
+
 app = QApplication(sys.argv) # /!\ MUST BE HERE /!\
 
 buildVersion = "0.5 (Alpha)"
 
-
 class MainWindow(QMainWindow):
-  ### Add import...
-  from tabs.colorpicker import ColorPicker
-  from tabs.base64 import Base64
-  from tabs.maintenance import Maintenance
-  from tabs.resolutions import Resolutions
-  from tabs.suivi_series import SuiviSeries
-
-  ### ...and insert an entry {"Tab text": ClassName()} for each component
-  tabsList = {
-    "Sélecteur de couleur": ColorPicker(),
-    "Convertisseur Base64": Base64(),
-    "Maintenance du PC": Maintenance(),
-    "Résolutions par ratio d'aspect": Resolutions(),
-    "Suivi des séries": SuiviSeries(),
-  }
-
-
   def __init__(self):
     super().__init__()
+
+    self.LoadModules()
 
     ### MENU BAR
     self.menuBar = QMenuBar()
     menuOptions = QMenu("Options", self.menuBar)
-    menuOptions.addAction("Choisir les tabs à charger au démarrage...")
+    menuOptions.addAction("Modifier les options", self.OptionsDialog)
     self.menuBar.addMenu(menuOptions)
 
     ### STATUS BAR
@@ -59,7 +44,29 @@ class MainWindow(QMainWindow):
     self.setCentralWidget(self.tabsContainer)
     self.setStatusBar(self.statusBar)
     self.show()
-  
+
+  def LoadModules(self):
+    import os, importlib, importlib.util
+
+    self.tabsList = dict()
+
+    for file in os.listdir("tabs"):
+      if file != "__pycache__":
+        module = importlib.import_module(f"tabs.{file.replace('.py', '')}")
+        theClass = module.TabWidget()
+        theDescription = module.tabDescription
+        self.tabsList[theDescription] = theClass
+      
+    print(self.tabsList)
+
+  def OptionsDialog(self):
+    test = QDialog(self, Qt.Dialog)
+    test.setWindowModality(Qt.WindowModal)
+    layout = QVBoxLayout(test)
+    
+    test.setLayout(layout)
+    test.show()
+
   def AboutTab(self):
     import webbrowser
     programLabel = QLabel(f"Silv3r's MultiTools v{buildVersion}")

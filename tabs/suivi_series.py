@@ -6,9 +6,12 @@ import thirdParty.tmdbsimple as tmdb
 
 from variables import widgetMargins, TextShadow
 
+
+tabDescription = "Suivi des séries"
+
 tmdb.API_KEY = "" # MUST BE FILLED FOR TMDB API
 
-class SuiviSeries(QWidget):
+class TabWidget(QWidget):
   serieStruct ={
     "name": "",
     "cover": bytes(0),

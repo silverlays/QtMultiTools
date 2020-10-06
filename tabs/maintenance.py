@@ -5,7 +5,9 @@ from PyQt5.QtCore import *
 from variables import widgetMargins
 
 
-class Maintenance(QWidget):
+tabDescription = "Maintenance du PC"
+
+class TabWidget(QWidget):
   buttonsFixedWidth = 500
   buttonsFixedHeight = 40
 

@@ -6,7 +6,9 @@ from PyQt5.QtCore import *
 from variables import widgetMargins
 
 
-class Base64(QWidget):
+tabDescription = "Convertisseur Base64"
+
+class TabWidget(QWidget):
   def __init__(self):
     super().__init__()
 
