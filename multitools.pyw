@@ -9,7 +9,7 @@ from variables import TextShadow
 
 app = QApplication(sys.argv) # /!\ MUST BE HERE /!\
 
-buildVersion = "0.5 (Alpha)"
+buildVersion = "0.6 (Alpha)"
 
 class MainWindow(QMainWindow):
   def __init__(self):
@@ -50,22 +50,35 @@ class MainWindow(QMainWindow):
 
     self.tabsList = dict()
 
-    for file in os.listdir("tabs"):
+    for file in os.listdir("./tabs"):
       if file != "__pycache__":
-        module = importlib.import_module(f"tabs.{file.replace('.py', '')}")
-        theClass = module.TabWidget()
-        theDescription = module.tabDescription
-        self.tabsList[theDescription] = theClass
+        try:
+          module = importlib.import_module(f"tabs.{file.replace('.py', '')}")
+          theClass = module.TabWidget()
+          theDescription = module.tabDescription
+          self.tabsList[theDescription] = theClass
+        except AttributeError as errorMsg:
+          QMessageBox.warning(QWidget(), "Attention!", f"Une erreur est survenue sur le module <{file}>.\n\nVeuillez vérifier le fichier README.md sur le site pour savoir comment importer correctement un module dans Silv3r's MultiTools.")
       
-    print(self.tabsList)
-
   def OptionsDialog(self):
-    test = QDialog(self, Qt.Dialog)
-    test.setWindowModality(Qt.WindowModal)
-    layout = QVBoxLayout(test)
+    dialog = QDialog(self, Qt.Dialog)
+    dialog.setWindowTitle("Options")
+    dialog.setModal(True)
+    dialog.accepted.connect(self.SaveConfig)
+    layout = QVBoxLayout(dialog)
     
-    test.setLayout(layout)
-    test.show()
+    for tab in self.tabsList:
+      checkbox = QCheckBox(tab)
+      checkbox.setChecked(True)
+      layout.addWidget(checkbox)
+    
+    dialogButtons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+    dialogButtons.accepted.connect(dialog.accept)
+    dialogButtons.rejected.connect(dialog.reject)
+    layout.addWidget(dialogButtons)
+
+    dialog.setLayout(layout)
+    dialog.show()
 
   def AboutTab(self):
     import webbrowser
@@ -113,6 +126,10 @@ class MainWindow(QMainWindow):
     import os, subprocess
     self.close()
     subprocess.call(["py", os.path.abspath(__file__)])
+  
+  def SaveConfig(self):
+    ### TODO ###
+    print("--- TODO ---")
 
 
 if __name__ == "__main__":
