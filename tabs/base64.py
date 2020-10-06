@@ -93,7 +93,7 @@ class Base64(QWidget):
   def SaveFileButton(self):
     def Callback(button, path):
       import io
-      button.setText("...%s" % path[-30:])
+      button.setText(f"...{path[-30:]}")
       with io.open(path, "xb") as file:
         buffer = base64.b64decode(self.groupBox4Base64.toPlainText().encode('utf-8'))
         file.write(buffer)
