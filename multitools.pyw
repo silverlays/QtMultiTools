@@ -32,6 +32,12 @@ class MainWindow(QMainWindow):
   def __init__(self):
     super().__init__()
 
+    ### MENU BAR
+    self.menuBar = QMenuBar()
+    menuOptions = QMenu("Options", self.menuBar)
+    menuOptions.addAction("Choisir les tabs à charger au démarrage...")
+    self.menuBar.addMenu(menuOptions)
+
     ### STATUS BAR
     self.statusBar = QStatusBar()
     self.statusBar.showMessage("Modules chargés: %s" % self.tabsList.__len__())
@@ -49,6 +55,7 @@ class MainWindow(QMainWindow):
     ### WINDOW'S PROPERTIES
     self.setWindowTitle("Silv3r's MultiTools v%s" % buildVersion)
     self.setMinimumSize(1280, 900)
+    self.setMenuBar(self.menuBar)
     self.setCentralWidget(self.tabsContainer)
     self.setStatusBar(self.statusBar)
     self.show()
