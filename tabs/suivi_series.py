@@ -200,8 +200,9 @@ class SuiviSeries(QWidget):
   
 
   def RemoveSerie_Clicked(self):
-    if hasattr(self, "selectedSerie") and QMessageBox.warning(self, "Attention", "Voulez-vous vraiment supprimer l'élément <%s> ?" % self.selectedSerie["name"], QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+    if hasattr(self, "selectedSerie") and QMessageBox.warning(self, "Attention", f"Voulez-vous vraiment supprimer l'élément <{self.selectedSerie['name']}> ?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
       self.seriesContainer.remove(self.selectedSerie)
+      self.SaveData()
       self.ReloadData()
 
 

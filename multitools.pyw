@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
 
     ### STATUS BAR
     self.statusBar = QStatusBar()
-    self.statusBar.showMessage("Modules chargés: %s" % self.tabsList.__len__())
+    self.statusBar.showMessage(f"Modules chargés: {self.tabsList.__len__()}")
     resetButton = QPushButton()
     resetButton.setIcon(QIcon("images/reset.png"))
     resetButton.clicked.connect(self.Reset)
@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
     self.tabsContainer.addTab(self.AboutTab(), "A propos...")
     
     ### WINDOW'S PROPERTIES
-    self.setWindowTitle("Silv3r's MultiTools v%s" % buildVersion)
+    self.setWindowTitle(f"Silv3r's MultiTools v{buildVersion}")
     self.setMinimumSize(1280, 900)
     self.setCentralWidget(self.tabsContainer)
     self.setStatusBar(self.statusBar)
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
   
   def AboutTab(self):
     import webbrowser
-    programLabel = QLabel("Silv3r's MultiTools v%s" % buildVersion)
+    programLabel = QLabel(f"Silv3r's MultiTools v{buildVersion}")
     programLabel.setStyleSheet("color: #aaffff; font-size: 36px")
     programLabel.setAlignment(Qt.AlignCenter)
     programLabel.setGraphicsEffect(TextShadow())
