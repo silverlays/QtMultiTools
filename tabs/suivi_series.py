@@ -2,7 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-import thirdParty.tmdbsimple as tmdb
+import tmdbsimple as tmdb
 
 from variables import widgetMargins, TextShadow
 
