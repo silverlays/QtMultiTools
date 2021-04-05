@@ -51,7 +51,7 @@ class TabWidget(QWidget):
 
 
   def ClipboardButton(self, referTo):
-    import clipboard
+    import pyperclip as clipboard
     button = QPushButton()
     button.setText("C")
     button.setMaximumWidth(25)
