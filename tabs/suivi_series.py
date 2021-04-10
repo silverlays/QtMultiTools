@@ -8,8 +8,7 @@ from variables import widgetMargins, TextShadow
 
 
 tabDescription = "Suivi des séries"
-
-tmdb.API_KEY = "" # MUST BE FILLED FOR TMDB API
+tmdb_key_path = "tmdb.key"
 
 class TabWidget(QWidget):
   serieStruct ={
@@ -222,9 +221,14 @@ class TabWidget(QWidget):
 
 
   def ScrapeButton_Clicked(self):
-    import requests
+    import requests, os, io
 
     # BASE CONFIG
+    if os.path.exists(tmdb_key_path):
+      with io.open(tmdb_key_path, mode="r") as fp:
+        for line in fp:
+          if line[0] != "#" and line != "":
+            tmdb.API_KEY = line
     config = tmdb.Configuration()
     configResponse = config.info()
     baseUrl = configResponse['images']['base_url'] + "w500"
