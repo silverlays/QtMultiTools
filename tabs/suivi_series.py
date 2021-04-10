@@ -9,6 +9,7 @@ from variables import widgetMargins, TextShadow
 
 tabDescription = "Suivi des séries"
 tmdb_key_path = "tmdb.key"
+tmdb_cache_path = "tmdb.dat"
 
 class TabWidget(QWidget):
   serieStruct ={
@@ -256,14 +257,15 @@ class TabWidget(QWidget):
 
 
   def LoadData(self):
-    file = QFile("data.json")
+    file = QFile(tmdb_cache_path)
     if(file.open(QIODevice.ReadOnly)):
-      self.seriesContainer = QJsonDocument.fromJson(file.readAll()).toVariant()
+      self.seriesContainer = QJsonDocument.fromBinaryData(file.readAll()).toVariant()
+    else: self.seriesContainer = []
 
 
   def ReloadData(self):
     try: del self.selectedSerie
-    except Exception: pass    
+    except Exception: pass
     self.rightGroupBox.hide()
     self.seriesContainer = sorted(self.seriesContainer, key=lambda k: k["name"])
     self.seriesListBox.clear()
@@ -273,8 +275,8 @@ class TabWidget(QWidget):
   
 
   def SaveData(self):
-    file = QFile("data.json")
+    file = QFile(tmdb_cache_path)
     if(file.open(QIODevice.WriteOnly)):
       jsonSeries = QJsonDocument(self.seriesContainer)
-      file.write(jsonSeries.toJson(QJsonDocument.Compact))
+      file.write(jsonSeries.toBinaryData())
       file.close()
