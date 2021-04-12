@@ -8,8 +8,8 @@ from variables import TextShadow
 
 
 app = QApplication(sys.argv) # /!\ MUST BE HERE /!\
-
 buildVersion = "0.6 (Alpha)"
+
 
 class MainWindow(QMainWindow):
   def __init__(self):

@@ -7,6 +7,7 @@ from variables import widgetMargins
 
 tabDescription = "Maintenance du PC"
 
+
 class TabWidget(QWidget):
   buttonsFixedWidth = 500
   buttonsFixedHeight = 40
@@ -27,8 +28,7 @@ class TabWidget(QWidget):
     mainLayout.addWidget(mainGroupBox)
 
     self.setLayout(mainLayout)
-  
-  
+    
   def ClearCacheButton(self):
     button = QPushButton("Effacer le cache des icônes du système")
     button.setFixedHeight(self.buttonsFixedHeight)

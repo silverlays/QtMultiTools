@@ -7,6 +7,7 @@ from variables import widgetMargins
 
 tabDescription = "Sélecteur de couleur"
 
+
 class TabWidget(QWidget):
   def __init__(self):
     super().__init__()
@@ -49,7 +50,6 @@ class TabWidget(QWidget):
     mainLayout.addWidget(self.groupBox, 1, 0)
     self.setLayout(mainLayout)
 
-
   def ClipboardButton(self, referTo):
     import pyperclip as clipboard
     button = QPushButton()
@@ -58,7 +58,6 @@ class TabWidget(QWidget):
     button.clicked.connect(lambda: clipboard.copy(referTo.text()))
     return button
   
-
   def GetColor(self):
     color = QColor(self.colorDialog.getColor())
     palette = QPalette()

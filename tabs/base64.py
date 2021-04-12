@@ -8,6 +8,7 @@ from variables import widgetMargins
 
 tabDescription = "Convertisseur Base64"
 
+
 class TabWidget(QWidget):
   def __init__(self):
     super().__init__()
@@ -62,20 +63,17 @@ class TabWidget(QWidget):
     mainLayout.addWidget(self.groupBox4, 2, 1)
     self.setLayout(mainLayout)
 
-
   def StringToBase64(self):
     try:
       self.groupBox1Result.setText(base64.encodebytes(self.groupBox1String.text().encode('utf-8')).decode('utf-8'))
     except Exception:
       self.groupBox1Result.setText("")
 
-
   def Base64ToString(self):
     try:    
       self.groupBox2Result.setText(base64.decodebytes(self.groupBox2Base64.toPlainText().encode('utf-8')).decode('utf-8'))
     except Exception:
       self.groupBox2Result.setText("")
-
 
   def OpenFileButton(self):
     def Callback(button, path):
@@ -91,7 +89,6 @@ class TabWidget(QWidget):
     button.clicked.connect(lambda: Callback(button, QFileDialog().getOpenFileName()[0]))
     return button
   
-
   def SaveFileButton(self):
     def Callback(button, path):
       import io

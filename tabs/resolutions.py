@@ -7,6 +7,7 @@ from variables import widgetMargins, TextShadow
 
 tabDescription = "Résolutions par ratio d'aspect"
 
+
 class TabWidget(QWidget):
   def __init__(self):
     super().__init__()
@@ -32,7 +33,6 @@ class TabWidget(QWidget):
 
     self.setLayout(mainlayout)
 
-
   def CreateResolutions(self):
     for resolutionIndex in range(self.aspectComboBox.count()):
       widget = QWidget()
@@ -57,8 +57,7 @@ class TabWidget(QWidget):
 
       widget.setLayout(layout)
       self.resolutionsGroupBoxStackedLayout.addWidget(widget)
-  
-  
+      
   def ChangeResolution(self):
     import random
     self.resolutionsGroupBoxStackedLayout.setCurrentIndex(self.aspectComboBox.currentIndex())

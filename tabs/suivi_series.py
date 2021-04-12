@@ -13,6 +13,7 @@ tabDescription = "Suivi des séries"
 tmdb_key_path = "tmdb.key"
 tmdb_cache_path = "tmdb.dat"
 
+
 class TabWidget(QWidget):
   serieStruct ={
     "name": "",
@@ -22,7 +23,6 @@ class TabWidget(QWidget):
     "lastWatchedSeason": 1,
     "lastWatchedEpisode": 1
   }
-
   seriesContainer = []
 
 
@@ -123,7 +123,6 @@ class TabWidget(QWidget):
     self.LoadData()
     self.ReloadData()
     
-
   def SeriesListBox_Changed(self, item):
     for serie in self.seriesContainer:
       if item and serie["name"] == item.text():
@@ -173,7 +172,6 @@ class TabWidget(QWidget):
         self.lastWatchedSeasonComboBox.currentIndexChanged.connect(self.SeasonComboBox_Changed)
         self.lastWatchedEpisodeComboBox.currentIndexChanged.connect(self.EpisodeComboBox_Changed)
         
-
   def AddSerie_Clicked(self):
     def AjouterSerie(name):
       serie = dict(self.serieStruct)
@@ -203,13 +201,11 @@ class TabWidget(QWidget):
     dialog.setLayout(layout)
     dialog.show()
   
-
   def RemoveSerie_Clicked(self):
     if hasattr(self, "selectedSerie") and QMessageBox.warning(self, "Attention", f"Voulez-vous vraiment supprimer l'élément <{self.selectedSerie['name']}> ?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
       self.seriesContainer.remove(self.selectedSerie)
       self.SaveData()
       self.ReloadData()
-
 
   def SeasonComboBox_Changed(self, index):
     if len(self.selectedSerie["seasons"]) > 0:
@@ -218,10 +214,8 @@ class TabWidget(QWidget):
       self.lastWatchedEpisodeComboBox.addItems("%s" % (x + 1) for x in range(episodeCount))
     self.selectedSerie["lastWatchedSeason"] = index + 1
 
-
   def EpisodeComboBox_Changed(self, index):
     self.selectedSerie["lastWatchedEpisode"] = index + 1
-
 
   def ScrapeButton_Clicked(self):
     import requests, os, io
@@ -265,7 +259,6 @@ class TabWidget(QWidget):
       self.seriesContainer = QJsonDocument.fromBinaryData(file.readAll()).toVariant()
     else: self.seriesContainer = []
 
-
   def ReloadData(self):
     try: del self.selectedSerie
     except Exception: pass
@@ -275,7 +268,6 @@ class TabWidget(QWidget):
     for serie in self.seriesContainer: self.seriesListBox.addItem(serie["name"])
     try: self.seriesListBox.setCurrentIndex(0)
     except Exception: pass
-  
 
   def SaveData(self):
     file = QFile(tmdb_cache_path)
