@@ -1,3 +1,4 @@
+from os import error
 import sys
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -46,19 +47,17 @@ class MainWindow(QMainWindow):
     self.show()
 
   def LoadModules(self):
-    import os, importlib, importlib.util
+    import os, fnmatch, importlib, json
 
-    self.tabsList = dict()
+    self.tabsList = {}
 
-    for file in os.listdir("./tabs"):
-      if file != "__pycache__":
-        try:
-          module = importlib.import_module(f"tabs.{file.replace('.py', '')}")
-          theClass = module.TabWidget()
-          theDescription = module.tabDescription
-          self.tabsList[theDescription] = theClass
-        except AttributeError as errorMsg:
-          QMessageBox.warning(QWidget(), "Attention!", f"Une erreur est survenue sur le module <{file}>.\n\nVeuillez vérifier le fichier README.md sur le site pour savoir comment importer correctement un module dans Silv3r's MultiTools.")
+    tabs = fnmatch.filter(os.listdir("./tabs"), "*.py")
+    for tab in tabs:
+      try:
+          module = importlib.import_module(f"tabs.{tab.removesuffix('.py')}")
+          self.tabsList[module.tabDescription] = module.TabWidget()
+      except AttributeError as errorMsg:
+        QMessageBox.warning(QWidget(), "Attention!", f"Une erreur est survenue: {errorMsg.args[0]}\n\nVeuillez vérifier le fichier README.md sur le site pour savoir comment importer correctement un module dans QtMultiTools.")
       
   def OptionsDialog(self):
     dialog = QDialog(self, Qt.Dialog)
