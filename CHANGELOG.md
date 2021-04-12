@@ -5,6 +5,7 @@
 * Add translation for the whole app (only french is available for now)
 * Add many tools to the *Maintenance* tab
 
+
 ## v0.6 (Alpha)
 ### Some improvements
 * **General:** Tabs Manager w/ options for each modules
@@ -14,6 +15,7 @@
 * **General:** Add tab's template in the *tabs* folder
 * **Followed series:** From JSON brut data to binary Data
 * **Followed series:** Add "tmdb.key" in root folder instead of right in code
+
 
 ## v0.5 (Alpha)
 ### First public release
