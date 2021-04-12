@@ -1,6 +1,8 @@
+import PyQt5
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from requests.models import HTTPError
 
 import thirdParty.tmdbsimple as tmdb
 
@@ -231,30 +233,31 @@ class TabWidget(QWidget):
           if line[0] != "#" and line != "":
             tmdb.API_KEY = line
     config = tmdb.Configuration()
-    configResponse = config.info()
-    baseUrl = configResponse['images']['base_url'] + "w500"
-    
-    # SEARCH BY NAME
-    search = tmdb.Search()
-    searchResponse = search.tv(query=self.selectedSerie["name"], language="fr")
-    seriesNames = list(x["name"] for x in searchResponse["results"])
-    dialogResponse = QInputDialog().getItem(self, "Resultat de la recherche TMDB", "Sélectionnez la série correspondante dans la liste:", seriesNames, editable=False)
+    try:
+      configResponse = config.info()
+      baseUrl = configResponse['images']['base_url'] + "w500"
+      # SEARCH BY NAME
+      search = tmdb.Search()
+      searchResponse = search.tv(query=self.selectedSerie["name"], language="fr")
+      seriesNames = list(x["name"] for x in searchResponse["results"])
+      dialogResponse = QInputDialog().getItem(self, "Resultat de la recherche TMDB", "Sélectionnez la série correspondante dans la liste:", seriesNames, editable=False)
 
-    if dialogResponse[1]:
-      # FILL DATABASE
-      tv = tmdb.TV(searchResponse["results"][seriesNames.index(dialogResponse[0])]["id"])
-      tvResponse = tv.info()
-      self.selectedSerie["name"] = tvResponse["name"]
-      self.selectedSerie["description"] = searchResponse["results"][seriesNames.index(dialogResponse[0])]["overview"]
-      if tvResponse["poster_path"]:
-          coverData = requests.get(baseUrl + tvResponse["poster_path"])
-          self.selectedSerie["cover"] = coverData.content
-      self.selectedSerie["seasons"] = []
-      for season in tvResponse["seasons"]:
-        if season["season_number"] > 0:
-          self.selectedSerie["seasons"].append({"episode_count": season["episode_count"]})
-      self.ReloadData()
-
+      if dialogResponse[1]:
+        # FILL DATABASE
+        tv = tmdb.TV(searchResponse["results"][seriesNames.index(dialogResponse[0])]["id"])
+        tvResponse = tv.info()
+        self.selectedSerie["name"] = tvResponse["name"]
+        self.selectedSerie["description"] = searchResponse["results"][seriesNames.index(dialogResponse[0])]["overview"]
+        if tvResponse["poster_path"]:
+            coverData = requests.get(baseUrl + tvResponse["poster_path"])
+            self.selectedSerie["cover"] = coverData.content
+        self.selectedSerie["seasons"] = []
+        for season in tvResponse["seasons"]:
+          if season["season_number"] > 0:
+            self.selectedSerie["seasons"].append({"episode_count": season["episode_count"]})
+        self.ReloadData()
+    except HTTPError as e:
+      QMessageBox.critical(self, "Error", f"La requête TMDB API à retourné l'erreur suivante:\n\n{e}")
 
   def LoadData(self):
     file = QFile(tmdb_cache_path)
