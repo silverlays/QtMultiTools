@@ -1,4 +1,5 @@
 import PyQt5
+import bson
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -16,12 +17,12 @@ tmdb_cache_path = "tmdb.dat"
 
 class TabWidget(QWidget):
   serieStruct ={
-    "name": "",
-    "cover": bytes(0),
-    "description": "",
-    "seasons": [],
-    "lastWatchedSeason": 1,
-    "lastWatchedEpisode": 1
+    'name': "",
+    'cover': bytes(0),
+    'description': "",
+    'seasons': [],
+    'lastWatchedSeason': 1,
+    'lastWatchedEpisode': 1
   }
   seriesContainer = []
 
@@ -125,7 +126,7 @@ class TabWidget(QWidget):
     
   def SeriesListBox_Changed(self, item):
     for serie in self.seriesContainer:
-      if item and serie["name"] == item.text():
+      if item and serie['name'] == item.text():
         self.selectedSerie = serie
         self.rightGroupBox.show()
         try:
@@ -136,16 +137,16 @@ class TabWidget(QWidget):
         self.lastWatchedEpisodeComboBox.clear()
         
         # NAME
-        self.titleLabel.setText(serie["name"])
+        self.titleLabel.setText(serie['name'])
         
         # DESCRIPTION
-        if serie["description"]: self.descriptionLabel.setText(serie["description"])
+        if serie['description']: self.descriptionLabel.setText(serie['description'])
         else: self.descriptionLabel.setText("Aucune description. Scrappez pour récupérer les données.")
 
         # COVER
         coverPixmap = QPixmap()
-        if serie["cover"]:
-          coverPixmap.loadFromData(bytes(serie["cover"]), "JPG")
+        if serie['cover']:
+          coverPixmap.loadFromData(bytes(serie['cover']), "JPG")
         else:
           coverFile = QFile("images/no-cover.jpg")
           if(coverFile.open(QIODevice.ReadOnly)):
@@ -155,28 +156,28 @@ class TabWidget(QWidget):
         self.coverBox.setPixmap(coverPixmap.scaled(self.coverBox.width(), self.coverBox.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation))        
         
         # SEASONS ET EPISODES
-        if len(serie["seasons"]) > 0:
-          self.lastAvailableSeasonNumber.setText("%s" % len(serie["seasons"]))
-          self.lastAvailableEpisodeNumber.setText("%s" % serie["seasons"][len(serie["seasons"])-1]["episode_count"])  
-          self.lastWatchedSeasonComboBox.addItems("%s" % x for x in range(1, len(serie["seasons"]) + 1))
-          self.lastWatchedSeasonComboBox.setCurrentIndex(serie["lastWatchedSeason"] - 1)
-          self.lastWatchedEpisodeComboBox.addItems("%s" % x for x in range(1, serie["seasons"][serie["lastWatchedSeason"] - 1]["episode_count"] + 1))
-          self.lastWatchedEpisodeComboBox.setCurrentIndex(serie["lastWatchedEpisode"] - 1)
+        if len(serie['seasons']) > 0:
+          self.lastAvailableSeasonNumber.setText("%s" % len(serie['seasons']))
+          self.lastAvailableEpisodeNumber.setText("%s" % serie['seasons'][len(serie['seasons'])-1]['episode_count'])  
+          self.lastWatchedSeasonComboBox.addItems("%s" % x for x in range(1, len(serie['seasons']) + 1))
+          self.lastWatchedSeasonComboBox.setCurrentIndex(serie['lastWatchedSeason'] - 1)
+          self.lastWatchedEpisodeComboBox.addItems("%s" % x for x in range(1, serie['seasons'][serie['lastWatchedSeason'] - 1]['episode_count'] + 1))
+          self.lastWatchedEpisodeComboBox.setCurrentIndex(serie['lastWatchedEpisode'] - 1)
         else:
           self.lastAvailableSeasonNumber.setText("N/A")
           self.lastAvailableEpisodeNumber.setText("N/A")  
           self.lastWatchedSeasonComboBox.addItems("%s" % x for x in range(1, 21))
-          self.lastWatchedSeasonComboBox.setCurrentIndex(serie["lastWatchedSeason"] - 1)
+          self.lastWatchedSeasonComboBox.setCurrentIndex(serie['lastWatchedSeason'] - 1)
           self.lastWatchedEpisodeComboBox.addItems("%s" % x for x in range(1, 31))
-          self.lastWatchedEpisodeComboBox.setCurrentIndex(serie["lastWatchedEpisode"] - 1)
+          self.lastWatchedEpisodeComboBox.setCurrentIndex(serie['lastWatchedEpisode'] - 1)
         self.lastWatchedSeasonComboBox.currentIndexChanged.connect(self.SeasonComboBox_Changed)
         self.lastWatchedEpisodeComboBox.currentIndexChanged.connect(self.EpisodeComboBox_Changed)
         
   def AddSerie_Clicked(self):
     def AjouterSerie(name):
       serie = dict(self.serieStruct)
-      serie["name"] = name
-      serie["seasons"] = []
+      serie['name'] = name
+      serie['seasons'] = []
       self.seriesContainer.append(serie)
       dialog.close()
       self.ReloadData()
@@ -208,14 +209,14 @@ class TabWidget(QWidget):
       self.ReloadData()
 
   def SeasonComboBox_Changed(self, index):
-    if len(self.selectedSerie["seasons"]) > 0:
+    if len(self.selectedSerie['seasons']) > 0:
       self.lastWatchedEpisodeComboBox.clear()
-      episodeCount = self.selectedSerie["seasons"][index]["episode_count"]
+      episodeCount = self.selectedSerie['seasons'][index]['episode_count']
       self.lastWatchedEpisodeComboBox.addItems("%s" % (x + 1) for x in range(episodeCount))
-    self.selectedSerie["lastWatchedSeason"] = index + 1
+    self.selectedSerie['lastWatchedSeason'] = index + 1
 
   def EpisodeComboBox_Changed(self, index):
-    self.selectedSerie["lastWatchedEpisode"] = index + 1
+    self.selectedSerie['lastWatchedEpisode'] = index + 1
 
   def ScrapeButton_Clicked(self):
     import requests, os, io
@@ -233,22 +234,22 @@ class TabWidget(QWidget):
       # SEARCH BY NAME
       search = tmdb.Search()
       searchResponse = search.tv(query=self.selectedSerie["name"], language="fr")
-      seriesNames = list(x["name"] for x in searchResponse["results"])
+      seriesNames = list(x['name'] for x in searchResponse['results'])
       dialogResponse = QInputDialog().getItem(self, "Resultat de la recherche TMDB", "Sélectionnez la série correspondante dans la liste:", seriesNames, editable=False)
 
       if dialogResponse[1]:
         # FILL DATABASE
-        tv = tmdb.TV(searchResponse["results"][seriesNames.index(dialogResponse[0])]["id"])
+        tv = tmdb.TV(searchResponse['results'][seriesNames.index(dialogResponse[0])]['id'])
         tvResponse = tv.info()
-        self.selectedSerie["name"] = tvResponse["name"]
-        self.selectedSerie["description"] = searchResponse["results"][seriesNames.index(dialogResponse[0])]["overview"]
-        if tvResponse["poster_path"]:
-            coverData = requests.get(baseUrl + tvResponse["poster_path"])
-            self.selectedSerie["cover"] = coverData.content
-        self.selectedSerie["seasons"] = []
-        for season in tvResponse["seasons"]:
-          if season["season_number"] > 0:
-            self.selectedSerie["seasons"].append({"episode_count": season["episode_count"]})
+        self.selectedSerie['name'] = tvResponse['name']
+        self.selectedSerie['description'] = searchResponse['results'][seriesNames.index(dialogResponse[0])]['overview']
+        if tvResponse['poster_path']:
+            coverData = requests.get(baseUrl + tvResponse['poster_path'])
+            self.selectedSerie['cover'] = coverData.content
+        self.selectedSerie['seasons'] = []
+        for season in tvResponse['seasons']:
+          if season['season_number'] > 0:
+            self.selectedSerie['seasons'].append({'episode_count': season['episode_count']})
         self.ReloadData()
     except HTTPError as e:
       QMessageBox.critical(self, "Error", f"La requête TMDB API à retourné l'erreur suivante:\n\n{e}")
@@ -256,22 +257,23 @@ class TabWidget(QWidget):
   def LoadData(self):
     file = QFile(tmdb_cache_path)
     if(file.open(QIODevice.ReadOnly)):
-      self.seriesContainer = QJsonDocument.fromBinaryData(file.readAll()).toVariant()
+      tmpSeries = bson.loads(file.read(file.size()))
+      for tmpSerie in tmpSeries.values(): self.seriesContainer.append(tmpSerie)
+      file.close()
     else: self.seriesContainer = []
 
   def ReloadData(self):
     try: del self.selectedSerie
     except Exception: pass
     self.rightGroupBox.hide()
-    self.seriesContainer = sorted(self.seriesContainer, key=lambda k: k["name"])
+    self.seriesContainer = sorted(self.seriesContainer, key=lambda k: k['name'])
     self.seriesListBox.clear()
-    for serie in self.seriesContainer: self.seriesListBox.addItem(serie["name"])
+    for serie in self.seriesContainer: self.seriesListBox.addItem(serie['name'])
     try: self.seriesListBox.setCurrentIndex(0)
     except Exception: pass
 
   def SaveData(self):
     file = QFile(tmdb_cache_path)
     if(file.open(QIODevice.WriteOnly)):
-      jsonSeries = QJsonDocument(self.seriesContainer)
-      file.write(jsonSeries.toBinaryData())
+      file.write(bson.encode_array(self.seriesContainer, list()))
       file.close()
