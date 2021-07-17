@@ -5,9 +5,6 @@ from PyQt5.QtCore import *
 from variables import widgetMargins
 
 
-tabDescription = "Sélecteur de couleur"
-
-
 class TabWidget(QWidget):
   def __init__(self):
     super().__init__()

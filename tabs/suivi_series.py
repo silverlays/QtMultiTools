@@ -1,16 +1,14 @@
 import PyQt5
 import bson
+import images
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from requests.models import HTTPError
-
 import tmdbsimple as tmdb
-
 from variables import widgetMargins, TextShadow
 
 
-tabDescription = "Suivi des séries"
 tmdb_key_path = "tmdb.key"
 tmdb_cache_path = "tmdb.dat"
 
@@ -25,6 +23,7 @@ class TabWidget(QWidget):
     'lastWatchedEpisode': 1
   }
   seriesContainer = []
+  savedData = True
 
 
   def __init__(self):
@@ -101,6 +100,11 @@ class TabWidget(QWidget):
     saveButton.setDefault(True)
     saveButton.clicked.connect(self.SaveData)
 
+    self.saveStatus = QLabel()
+    self.saveStatus.setAlignment(Qt.AlignCenter)
+    self.saveStatus.setGraphicsEffect(TextShadow())
+    self.saveStatus.setContentsMargins(0, 5, 0, 0)
+
     rightLayout = QGridLayout()
     rightLayout.setAlignment(Qt.AlignTop)
     rightLayout.addWidget(self.titleLabel, 0, 0, 1, 2)
@@ -110,6 +114,7 @@ class TabWidget(QWidget):
     rightLayout.addWidget(watchedGroupBox, 3, 1)
     rightLayout.addWidget(scrapeButton, 4, 0)
     rightLayout.addWidget(saveButton, 4, 1)
+    rightLayout.addWidget(self.saveStatus, 5, 1)
 
     self.rightGroupBox = QGroupBox("Informations sur la série")
     self.rightGroupBox.setLayout(rightLayout)
@@ -146,14 +151,10 @@ class TabWidget(QWidget):
         # COVER
         coverPixmap = QPixmap()
         if serie['cover']:
-          coverPixmap.loadFromData(bytes(serie['cover']), "JPG")
+          coverPixmap.loadFromData(serie['cover'])
         else:
-          coverFile = QFile("images/no-cover.jpg")
-          if(coverFile.open(QIODevice.ReadOnly)):
-            buffer = coverFile.readAll()
-            coverPixmap.loadFromData(buffer)
-            coverFile.close()
-        self.coverBox.setPixmap(coverPixmap.scaled(self.coverBox.width(), self.coverBox.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation))        
+          coverPixmap = images.GetNoCoverPixmap()        
+        self.coverBox.setPixmap(coverPixmap.scaled(self.coverBox.width(), self.coverBox.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
         
         # SEASONS ET EPISODES
         if len(serie['seasons']) > 0:
@@ -172,6 +173,9 @@ class TabWidget(QWidget):
           self.lastWatchedEpisodeComboBox.setCurrentIndex(serie['lastWatchedEpisode'] - 1)
         self.lastWatchedSeasonComboBox.currentIndexChanged.connect(self.SeasonComboBox_Changed)
         self.lastWatchedEpisodeComboBox.currentIndexChanged.connect(self.EpisodeComboBox_Changed)
+    if not self.savedData:
+      self.saveStatus.setStyleSheet("color: indianred")
+      self.saveStatus.setText("Base de données NON sauvegardée.")
         
   def AddSerie_Clicked(self):
     def AjouterSerie(name):
@@ -180,6 +184,7 @@ class TabWidget(QWidget):
       serie['seasons'] = []
       self.seriesContainer.append(serie)
       dialog.close()
+      self.savedData = False
       self.ReloadData()
 
     dialog = QDialog(self)
@@ -205,7 +210,7 @@ class TabWidget(QWidget):
   def RemoveSerie_Clicked(self):
     if hasattr(self, "selectedSerie") and QMessageBox.warning(self, "Attention", f"Voulez-vous vraiment supprimer l'élément <{self.selectedSerie['name']}> ?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
       self.seriesContainer.remove(self.selectedSerie)
-      self.SaveData()
+      self.savedData = False
       self.ReloadData()
 
   def SeasonComboBox_Changed(self, index):
@@ -227,8 +232,12 @@ class TabWidget(QWidget):
         for line in fp:
           if line[0] != "#" and line != "":
             tmdb.API_KEY = line
-    config = tmdb.Configuration()
+    else:
+      QMessageBox.critical(self, "Erreur", f"Le fichier <{tmdb_key_path}> est introuvable dans le dossier de l'exécutable.")
+      return
+
     try:
+      config = tmdb.Configuration()
       configResponse = config.info()
       baseUrl = configResponse['images']['base_url'] + "w500"
       # SEARCH BY NAME
@@ -250,9 +259,10 @@ class TabWidget(QWidget):
         for season in tvResponse['seasons']:
           if season['season_number'] > 0:
             self.selectedSerie['seasons'].append({'episode_count': season['episode_count']})
+        self.savedData = False
         self.ReloadData()
     except HTTPError as e:
-      QMessageBox.critical(self, "Error", f"La requête TMDB API à retourné l'erreur suivante:\n\n{e}")
+      QMessageBox.critical(self, "Erreur", f"La requête TMDB API à retourné l'erreur suivante:\n\n{e}")
 
   def LoadData(self):
     file = QFile(tmdb_cache_path)
@@ -277,3 +287,10 @@ class TabWidget(QWidget):
     if(file.open(QIODevice.WriteOnly)):
       file.write(bson.encode_array(self.seriesContainer, list()))
       file.close()
+      self.saveStatus.setStyleSheet("color: forestgreen")
+      self.saveStatus.setText("Base de données sauvegardée.")
+      self.savedData = True
+    else:
+      self.saveStatus.setStyleSheet("color: indianred")
+      self.saveStatus.setText("Une erreur est survenue.")
+      self.SaveData = False

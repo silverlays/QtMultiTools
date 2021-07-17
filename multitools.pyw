@@ -1,5 +1,5 @@
 from os import error
-import sys
+import images, sys
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -28,13 +28,13 @@ class MainWindow(QMainWindow):
     self.statusBar = QStatusBar()
     self.statusBar.showMessage(f"Modules chargés: {self.tabsList.__len__()}")
     resetButton = QPushButton()
-    resetButton.setIcon(QIcon("images/reset.png"))
+    resetButton.setIcon(images.GetResetIcon())
     resetButton.clicked.connect(self.Reset)
     self.statusBar.addPermanentWidget(resetButton)
 
     ### CENTRAL WIDGET
     self.tabsContainer = QTabWidget()
-    self.tabsList = dict(sorted(self.tabsList.items(), key=lambda item: item[0])) # SORT TABS ALPHABETICALY
+    # self.tabsList = dict(sorted(self.tabsList.items(), key=lambda item: item[0])) # SORT TABS ALPHABETICALY
     for tab in self.tabsList: self.tabsContainer.addTab(self.tabsList[tab], tab)
     self.tabsContainer.addTab(self.AboutTab(), "A propos...")
     
@@ -47,18 +47,10 @@ class MainWindow(QMainWindow):
     self.show()
 
   def LoadModules(self):
-    import os, fnmatch, importlib, json
+    import os, fnmatch, importlib, json, tabs
 
-    self.tabsList = {}
+    self.tabsList = tabs.tabsList
 
-    tabs = fnmatch.filter(os.listdir("./tabs"), "*.py")
-    for tab in tabs:
-      try:
-          module = importlib.import_module(f"tabs.{tab.removesuffix('.py')}")
-          self.tabsList[module.tabDescription] = module.TabWidget()
-      except AttributeError as errorMsg:
-        QMessageBox.warning(QWidget(), "Attention!", f"Une erreur est survenue: {errorMsg.args[0]}\n\nVeuillez vérifier le fichier README.md sur le site pour savoir comment importer correctement un module dans QtMultiTools.")
-      
   def OptionsDialog(self):
     dialog = QDialog(self, Qt.Dialog)
     dialog.setWindowTitle("Options")
@@ -137,7 +129,7 @@ if __name__ == "__main__":
   font.setPointSize(10)
   font.setWeight(QFont.Bold)
 
-  app.setWindowIcon(QIcon("images/app.ico"))
+  app.setWindowIcon(images.GetAppIcon())
   app.setStyle("Fusion")
   app.setFont(font)
   app.setPalette(QtDarkTheme())
