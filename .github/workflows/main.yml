@@ -24,9 +24,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller
         pip install -r requirements.txt
-        pyinstaller multitools.pyw --noupx -F --add-data=tabs:tabs --add-data=images:images -i "images/app.ico"
+    - name: Create binaries
+      run: pyinstaller multitools.pyw -F --add-data=tabs:tabs --add-data=images:images -i "images/app.ico" -n "QtMultiTools"
     - name: Create Release
       uses: ncipollo/release-action@v1.14.0
       with:
-        artifact: "dist/multitools.exe"
+        artifact: "dist/QtMultiTools.exe"
         skipIfReleaseExists: true
