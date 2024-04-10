@@ -58,9 +58,8 @@ class TabWidget(QWidget):
   def GetColor(self):
     color = QColor(self.colorDialog.getColor())
     palette = QPalette()
-    palette.setColor(QPalette.Window, QColor(0,0,0))
-    palette.setColor(QPalette.Button, color)
-    palette.setColor(QPalette.Background, color)
+    palette.setColor(QPalette.ColorRole.Window, QColor(0,0,0))
+    palette.setColor(QPalette.ColorRole.Button, color)
     self.colorDialogButton.setPalette(palette)
     self.hexEdit.setText(color.name())
     self.rgbEdit.setText(str.format(f"rgb({color.red()}, {color.green()}, {color.blue()})"))

@@ -153,7 +153,7 @@ class TabWidget(QWidget):
           coverPixmap.loadFromData(serie['cover'])
         else:
           coverPixmap = images.GetNoCoverPixmap()        
-        self.coverBox.setPixmap(coverPixmap.scaled(self.coverBox.width(), self.coverBox.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.coverBox.setPixmap(coverPixmap.scaled(self.coverBox.width(), self.coverBox.height(), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
         
         # SEASONS ET EPISODES
         if len(serie['seasons']) > 0:
@@ -283,7 +283,7 @@ class TabWidget(QWidget):
 
   def SaveData(self):
     file = QFile(tmdb_cache_path)
-    if(file.open(QIODevice.WriteOnly)):
+    if(file.open(QFile.OpenModeFlag.WriteOnly)):
       file.write(bson.encode_array(self.seriesContainer, list()))
       file.close()
       self.saveStatus.setStyleSheet("color: forestgreen")

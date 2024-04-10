@@ -60,7 +60,7 @@ class MainWindow(QMainWindow):
     }
 
   def OptionsDialog(self):
-    dialog = QDialog(self, Qt.Dialog)
+    dialog = QDialog(self, Qt.WindowType.Dialog)
     dialog.setWindowTitle("Options")
     dialog.setModal(True)
     dialog.accepted.connect(self.SaveConfig)
@@ -71,7 +71,7 @@ class MainWindow(QMainWindow):
       checkbox.setChecked(True)
       layout.addWidget(checkbox)
     
-    dialogButtons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+    dialogButtons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
     dialogButtons.accepted.connect(dialog.accept)
     dialogButtons.rejected.connect(dialog.reject)
     layout.addWidget(dialogButtons)
