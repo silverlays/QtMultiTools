@@ -1,9 +1,8 @@
-import PyQt5
 import bson
 import images
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 from requests.models import HTTPError
 import tmdbsimple as tmdb
 from variables import widgetMargins, TextShadow
@@ -33,11 +32,11 @@ class TabWidget(QWidget):
     self.seriesListBox = QListWidget()
     self.seriesListBox.currentItemChanged.connect(self.SeriesListBox_Changed)
     addSerieButton = QPushButton("Ajouter série")
-    addSerieButton.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+    addSerieButton.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
     addSerieButton.setStyleSheet("color: #0f0; font-weight: bold")
     addSerieButton.clicked.connect(self.AddSerie_Clicked)
     removeSerieButton = QPushButton("Supprimer série")
-    removeSerieButton.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+    removeSerieButton.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
     removeSerieButton.setStyleSheet("color: #f33; font-weight: bold")
     removeSerieButton.clicked.connect(self.RemoveSerie_Clicked)
 
@@ -52,18 +51,18 @@ class TabWidget(QWidget):
 
     # RIGHT SIDE
     self.titleLabel = QLabel()
-    self.titleLabel.setAlignment(Qt.AlignCenter)
+    self.titleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
     self.titleLabel.setContentsMargins(0, 10, 0, 10)
     self.titleLabel.setStyleSheet("color: #aaffff; font-size: 24px")
     self.titleLabel.setGraphicsEffect(TextShadow())
     self.coverBox = QLabel()
     self.coverBox.setGraphicsEffect(TextShadow())
-    self.coverBox.setAlignment(Qt.AlignHCenter)
-    self.coverBox.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
+    self.coverBox.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+    self.coverBox.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum)
     self.coverBox.setMinimumHeight(300)
 
     self.descriptionLabel = QLabel()
-    self.descriptionLabel.setAlignment(Qt.AlignJustify)
+    self.descriptionLabel.setAlignment(Qt.AlignmentFlag.AlignJustify)
     self.descriptionLabel.setWordWrap(True)
     self.descriptionLabel.setMargin(20)
     self.descriptionLabel.setGraphicsEffect(TextShadow())
@@ -79,7 +78,7 @@ class TabWidget(QWidget):
     self.lastAvailableEpisodeNumber.setStyleSheet("color: #aaffff")
 
     self.availableGroupBoxLayout = QFormLayout()
-    self.availableGroupBoxLayout.setFormAlignment(Qt.AlignCenter)
+    self.availableGroupBoxLayout.setFormAlignment(Qt.AlignmentFlag.AlignCenter)
     self.availableGroupBoxLayout.addRow(QLabel("Saison:"), self.lastAvailableSeasonNumber)
     self.availableGroupBoxLayout.addRow(QLabel("Episode:"), self.lastAvailableEpisodeNumber)
 
@@ -101,12 +100,12 @@ class TabWidget(QWidget):
     saveButton.clicked.connect(self.SaveData)
 
     self.saveStatus = QLabel()
-    self.saveStatus.setAlignment(Qt.AlignCenter)
+    self.saveStatus.setAlignment(Qt.AlignmentFlag.AlignCenter)
     self.saveStatus.setGraphicsEffect(TextShadow())
     self.saveStatus.setContentsMargins(0, 5, 0, 0)
 
     rightLayout = QGridLayout()
-    rightLayout.setAlignment(Qt.AlignTop)
+    rightLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
     rightLayout.addWidget(self.titleLabel, 0, 0, 1, 2)
     rightLayout.addWidget(self.coverBox, 1, 0, 1, 2)
     rightLayout.addWidget(self.descriptionLabel, 2, 0, 1, 2)
@@ -121,7 +120,7 @@ class TabWidget(QWidget):
 
     mainLayout = QGridLayout()
     mainLayout.setContentsMargins(widgetMargins)
-    mainLayout.setAlignment(Qt.AlignTop)
+    mainLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
     mainLayout.addWidget(leftGroupBox, 0, 0)
     mainLayout.addWidget(self.rightGroupBox, 0, 1)
 
@@ -266,7 +265,7 @@ class TabWidget(QWidget):
 
   def LoadData(self):
     file = QFile(tmdb_cache_path)
-    if(file.open(QIODevice.ReadOnly)):
+    if(file.open(QFile.OpenModeFlag.ReadOnly)):
       tmpSeries = bson.loads(file.read(file.size()))
       for tmpSerie in tmpSeries.values(): self.seriesContainer.append(tmpSerie)
       file.close()

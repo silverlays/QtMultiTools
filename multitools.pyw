@@ -1,8 +1,8 @@
 from os import error
 import images, sys
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 
 from QtDarkTheme import QtDarkTheme
 from variables import TextShadow
@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
     self.show()
 
   def LoadModules(self):
-    import os, fnmatch, importlib, json, tabs
+    import tabs
 
     self.tabsList = tabs.tabsList
 
@@ -75,7 +75,7 @@ class MainWindow(QMainWindow):
     import webbrowser
     programLabel = QLabel(f"Silv3r's MultiTools v{buildVersion}")
     programLabel.setStyleSheet("color: #aaffff; font-size: 36px")
-    programLabel.setAlignment(Qt.AlignCenter)
+    programLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
     programLabel.setGraphicsEffect(TextShadow())
 
     spacer = QSpacerItem(0, 25)
@@ -86,11 +86,11 @@ class MainWindow(QMainWindow):
     descriptionLabel.setWordWrap(True)
 
     twitchLink = QCommandLinkButton("https://www.twitch.tv/silv3r_ow", "Ma chaîne Twitch")
-    twitchLink.setCursor(QCursor(Qt.PointingHandCursor))
+    twitchLink.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
     twitchLink.clicked.connect(lambda: webbrowser.open(twitchLink.text()))
 
     youtubeLink = QCommandLinkButton("https://www.youtube.com/channel/UC9pLDlEx1XI0WNo-K23aH7A", "Ma chaîne YouTube")
-    youtubeLink.setCursor(QCursor(Qt.PointingHandCursor))
+    youtubeLink.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
     youtubeLink.clicked.connect(lambda: webbrowser.open(youtubeLink.text()))
 
     linksGroupBoxLayout = QGridLayout()
@@ -102,7 +102,7 @@ class MainWindow(QMainWindow):
 
     layout = QVBoxLayout()
     layout.setContentsMargins(100, 20, 100, 20)
-    layout.setAlignment(Qt.AlignTop)
+    layout.setAlignment(Qt.AlignmentFlag.AlignTop)
     layout.addWidget(programLabel)
     layout.addSpacerItem(spacer)
     layout.addWidget(descriptionLabel)
@@ -127,7 +127,7 @@ if __name__ == "__main__":
   font = QFont()
   font.setFamily(app.font().family())
   font.setPointSize(10)
-  font.setWeight(QFont.Bold)
+  font.setWeight(QFont.Weight.Bold)
 
   app.setWindowIcon(images.GetAppIcon())
   app.setStyle("Fusion")
@@ -135,4 +135,4 @@ if __name__ == "__main__":
   app.setPalette(QtDarkTheme())
 
   mainwindow = MainWindow()
-  sys.exit(app.exec_())
+  sys.exit(app.exec())

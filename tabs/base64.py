@@ -1,7 +1,7 @@
 import base64
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 
 from variables import widgetMargins
 
@@ -53,7 +53,7 @@ class TabWidget(QWidget):
 
     mainLayout = QGridLayout()
     mainLayout.setContentsMargins(widgetMargins)
-    mainLayout.setAlignment(Qt.AlignTop)
+    mainLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
     mainLayout.addWidget(self.groupBox1, 1, 0)
     mainLayout.addWidget(self.groupBox2, 1, 1)
     mainLayout.addWidget(self.groupBox3, 2, 0)

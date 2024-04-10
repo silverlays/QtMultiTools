@@ -1,6 +1,6 @@
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 
 from variables import widgetMargins
 
@@ -13,7 +13,7 @@ class TabWidget(QWidget):
 
     self.colorDialogButton = QPushButton()
     self.colorDialogButton.clicked.connect(self.GetColor)
-    self.colorDialogButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    self.colorDialogButton.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
     self.hexEdit = QLineEdit()
     self.hexEdit.setEnabled(False)
@@ -42,7 +42,7 @@ class TabWidget(QWidget):
     self.groupBox.setLayout(self.groupBoxLayout)
 
     mainLayout = QGridLayout()
-    mainLayout.setAlignment(Qt.AlignTop)
+    mainLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
     mainLayout.setContentsMargins(widgetMargins)
     mainLayout.addWidget(self.groupBox, 1, 0)
     self.setLayout(mainLayout)
