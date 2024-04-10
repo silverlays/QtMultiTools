@@ -1,5 +1,5 @@
 import pkgutil
-from PyQt6.QtGui import QIcon, QPixmap
+from PySide6.QtGui import QIcon, QPixmap
 
 def GetAppIcon() -> QIcon:
   icon = QIcon()

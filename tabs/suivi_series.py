@@ -1,8 +1,8 @@
 import bson
 import images
-from PyQt6.QtGui import *
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+from PySide6.QtCore import *
 from requests.models import HTTPError
 import tmdbsimple as tmdb
 from variables import widgetMargins, TextShadow

@@ -1,6 +1,14 @@
-from PyQt6.QtCore import QMargins
-from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QGraphicsDropShadowEffect
+from PySide6.QtCore import QMargins
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QGraphicsDropShadowEffect
+
+tabsList = {
+  "Suivi des séries": "suivi_series",
+  "Convertisseur Base64": "base64",
+  "Sélecteur de couleur": "colorpicker",
+  "Maintenance du PC": "maintenance",
+  "Résolutions par ratio d'aspect": "resolutions",
+}
 
 widgetMargins = QMargins(200, 20, 200, 20)
 

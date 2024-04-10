@@ -1,82 +1,41 @@
-import images, sys
-from PyQt6.QtGui import *
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import *
+import images
+import sys
 
+from PySide6.QtCore import *
+from PySide6.QtGui import QFont, QCursor
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QLabel, QSpacerItem, QCommandLinkButton, QVBoxLayout, QGridLayout, QGroupBox
+
+from importlib import import_module
 from QtDarkTheme import QtDarkTheme
-import tabs.base64
-import tabs.colorpicker
-import tabs.maintenance
-import tabs.resolutions
-import tabs.suivi_series
-from variables import TextShadow
-
-app = QApplication(sys.argv) # /!\ MUST BE HERE /!\
-buildVersion = "0.6 (Alpha)"
+from variables import tabsList, TextShadow
+from mainwindow_ui import Ui_MainWindow
 
 
-class MainWindow(QMainWindow):
+buildVersion = "0.7 (Alpha)"
+
+
+class App(QMainWindow, Ui_MainWindow):
   def __init__(self):
     super().__init__()
+    self.setupUi(self)
 
-    self.LoadModules()
+    ### WINDOW SETUP
+    self.setWindowTitle(f"{self.windowTitle()} v{buildVersion}")
 
-    ### MENU BAR
-    self.menuBar = QMenuBar()
-    menuOptions = QMenu("Options", self.menuBar)
-    menuOptions.addAction("Modifier les options", self.OptionsDialog)
-    self.menuBar.addMenu(menuOptions)
+    ### TABS SETUP
+    for tabDescription, tabTarget in tabsList.items():
+      module = import_module(f"tabs.{tabTarget}").TabWidget
+      self.tabWidget.addTab(module(), tabDescription)
+
+    self.tabWidget.addTab(self.AboutTab(), "About me...")
 
     ### STATUS BAR
-    self.statusBar = QStatusBar()
-    self.statusBar.showMessage(f"Modules chargés: {self.tabsList.__len__()}")
+    self.statusbar.showMessage(f"Modules chargés: {self.tabWidget.count()}")
     resetButton = QPushButton()
     resetButton.setIcon(images.GetResetIcon())
     resetButton.clicked.connect(self.Reset)
-    self.statusBar.addPermanentWidget(resetButton)
+    self.statusbar.addPermanentWidget(resetButton)
 
-    ### CENTRAL WIDGET
-    self.tabsContainer = QTabWidget()
-    # self.tabsList = dict(sorted(self.tabsList.items(), key=lambda item: item[0])) # SORT TABS ALPHABETICALY
-    for tab in self.tabsList: self.tabsContainer.addTab(self.tabsList[tab], tab)
-    self.tabsContainer.addTab(self.AboutTab(), "A propos...")
-    
-    ### WINDOW'S PROPERTIES
-    self.setWindowTitle(f"Silv3r's MultiTools v{buildVersion}")
-    self.setMinimumSize(1280, 900)
-    self.setMenuBar(self.menuBar)
-    self.setCentralWidget(self.tabsContainer)
-    self.setStatusBar(self.statusBar)
-    self.show()
-
-  def LoadModules(self):
-    self.tabsList = {
-      "Suivi des séries": tabs.suivi_series.TabWidget(),
-      "Convertisseur Base64": tabs.base64.TabWidget(),
-      "Sélecteur de couleur": tabs.colorpicker.TabWidget(),
-      "Maintenance du PC": tabs.maintenance.TabWidget(),
-      "Résolutions par ratio d'aspect": tabs.resolutions.TabWidget(),
-    }
-
-  def OptionsDialog(self):
-    dialog = QDialog(self, Qt.WindowType.Dialog)
-    dialog.setWindowTitle("Options")
-    dialog.setModal(True)
-    dialog.accepted.connect(self.SaveConfig)
-    layout = QVBoxLayout(dialog)
-    
-    for tab in self.tabsList:
-      checkbox = QCheckBox(tab)
-      checkbox.setChecked(True)
-      layout.addWidget(checkbox)
-    
-    dialogButtons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
-    dialogButtons.accepted.connect(dialog.accept)
-    dialogButtons.rejected.connect(dialog.reject)
-    layout.addWidget(dialogButtons)
-
-    dialog.setLayout(layout)
-    dialog.show()
 
   def AboutTab(self):
     import webbrowser
@@ -131,6 +90,8 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+  app = QApplication(sys.argv) # /!\ MUST BE HERE /!\
+
   font = QFont()
   font.setFamily(app.font().family())
   font.setPointSize(10)
@@ -141,5 +102,6 @@ if __name__ == "__main__":
   app.setFont(font)
   app.setPalette(QtDarkTheme())
 
-  mainwindow = MainWindow()
+  myApp = App()
+  myApp.show()
   sys.exit(app.exec())
