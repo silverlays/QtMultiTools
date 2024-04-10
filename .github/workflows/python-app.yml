@@ -28,3 +28,4 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pyinstaller multitools.pyw --noupx -F -i "images/app.ico" --add-data tabs;tabs --add-data images;images
