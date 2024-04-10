@@ -26,7 +26,7 @@ class TabWidget(QWidget):
 
     self.setLayout(mainLayout)
     
-  def ClearCacheButton(self):
+  def ClearCacheButton(self) -> QPushButton:
     button = QPushButton("Effacer le cache des icônes du système")
     button.setFixedHeight(self.buttonsFixedHeight)
     button.clicked.connect(lambda: QMessageBox.warning(self, "TODO", "En construction..."))
