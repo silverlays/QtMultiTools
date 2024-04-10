@@ -1,0 +1,1 @@
+pyinstaller multitools.pyw --noupx -F -i "images/app.ico" --add-data tabs;tabs --add-data images;images
