@@ -6,7 +6,6 @@ tabs/__pycache__
 *.IGNORE
 
 tmdb.dat
-build.bat
 upx.exe
 test.py
 QtMultiTools.7z
