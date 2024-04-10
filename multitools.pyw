@@ -5,8 +5,12 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 
 from QtDarkTheme import QtDarkTheme
+import tabs.base64
+import tabs.colorpicker
+import tabs.maintenance
+import tabs.resolutions
+import tabs.suivi_series
 from variables import TextShadow
-
 
 app = QApplication(sys.argv) # /!\ MUST BE HERE /!\
 buildVersion = "0.6 (Alpha)"
@@ -47,9 +51,13 @@ class MainWindow(QMainWindow):
     self.show()
 
   def LoadModules(self):
-    import tabs
-
-    self.tabsList = tabs.tabsList
+    self.tabsList = {
+      "Suivi des séries": tabs.suivi_series.TabWidget(),
+      "Convertisseur Base64": tabs.base64.TabWidget(),
+      "Sélecteur de couleur": tabs.colorpicker.TabWidget(),
+      "Maintenance du PC": tabs.maintenance.TabWidget(),
+      "Résolutions par ratio d'aspect": tabs.resolutions.TabWidget(),
+    }
 
   def OptionsDialog(self):
     dialog = QDialog(self, Qt.Dialog)
