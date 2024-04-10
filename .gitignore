@@ -5,6 +5,7 @@ __pycache__
 tabs/__pycache__
 *.IGNORE
 
+tmdb.dat
 build.bat
 upx.exe
 test.py

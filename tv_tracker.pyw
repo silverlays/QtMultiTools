@@ -1,18 +1,21 @@
 import bson
 import images
+import sys
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
+
 from requests.models import HTTPError
 import tmdbsimple as tmdb
-from variables import widgetMargins, TextShadow
+
+from QtDarkTheme import QtDarkTheme
 
 
 tmdb_key_path = "tmdb.key"
 tmdb_cache_path = "tmdb.dat"
 
 
-class TabWidget(QWidget):
+class TVShowTracker(QWidget):
   serieStruct ={
     'name': "",
     'cover': bytes(0),
@@ -27,6 +30,9 @@ class TabWidget(QWidget):
 
   def __init__(self):
     super().__init__()
+
+    self.setWindowTitle("TVShow Tracker")
+    self.setFixedSize(1280, 900)
 
     # LEFT SIDE
     self.seriesListBox = QListWidget()
@@ -54,18 +60,18 @@ class TabWidget(QWidget):
     self.titleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
     self.titleLabel.setContentsMargins(0, 10, 0, 10)
     self.titleLabel.setStyleSheet("color: #aaffff; font-size: 24px")
-    self.titleLabel.setGraphicsEffect(TextShadow())
+    self.titleLabel.setGraphicsEffect(self.TextShadow())
     self.coverBox = QLabel()
-    self.coverBox.setGraphicsEffect(TextShadow())
+    self.coverBox.setGraphicsEffect(self.TextShadow())
     self.coverBox.setAlignment(Qt.AlignmentFlag.AlignHCenter)
     self.coverBox.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum)
-    self.coverBox.setMinimumHeight(300)
+    self.coverBox.setMinimumHeight(400)
 
     self.descriptionLabel = QLabel()
     self.descriptionLabel.setAlignment(Qt.AlignmentFlag.AlignJustify)
     self.descriptionLabel.setWordWrap(True)
     self.descriptionLabel.setMargin(20)
-    self.descriptionLabel.setGraphicsEffect(TextShadow())
+    self.descriptionLabel.setGraphicsEffect(self.TextShadow())
 
     self.lastWatchedSeasonComboBox = QComboBox()
     self.lastWatchedSeasonComboBox.setMaximumWidth(50)
@@ -101,7 +107,7 @@ class TabWidget(QWidget):
 
     self.saveStatus = QLabel()
     self.saveStatus.setAlignment(Qt.AlignmentFlag.AlignCenter)
-    self.saveStatus.setGraphicsEffect(TextShadow())
+    self.saveStatus.setGraphicsEffect(self.TextShadow())
     self.saveStatus.setContentsMargins(0, 5, 0, 0)
 
     rightLayout = QGridLayout()
@@ -119,7 +125,6 @@ class TabWidget(QWidget):
     self.rightGroupBox.setLayout(rightLayout)
 
     mainLayout = QGridLayout()
-    mainLayout.setContentsMargins(widgetMargins)
     mainLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
     mainLayout.addWidget(leftGroupBox, 0, 0)
     mainLayout.addWidget(self.rightGroupBox, 0, 1)
@@ -127,7 +132,16 @@ class TabWidget(QWidget):
     self.setLayout(mainLayout)
     self.LoadData()
     self.ReloadData()
-    
+
+
+  def TextShadow(self):
+    textShadow = QGraphicsDropShadowEffect()
+    textShadow.setColor(QColor(32, 32, 32))
+    textShadow.setOffset(5, 5)
+    textShadow.setBlurRadius(8)
+    return textShadow
+
+   
   def SeriesListBox_Changed(self, item):
     for serie in self.seriesContainer:
       if item and serie['name'] == item.text():
@@ -293,3 +307,22 @@ class TabWidget(QWidget):
       self.saveStatus.setStyleSheet("color: indianred")
       self.saveStatus.setText("Une erreur est survenue.")
       self.SaveData = False
+
+
+if __name__ == "__main__":
+  app = QApplication(sys.argv)
+
+  font = QFont()
+  font.setFamily(app.font().family())
+  font.setPointSize(10)
+  font.setWeight(QFont.Weight.Bold)
+
+  app.setWindowIcon(images.GetAppIcon())
+  app.setStyle("Fusion")
+  app.setFont(font)
+  app.setPalette(QtDarkTheme())
+
+  window = TVShowTracker()
+  window.show()
+
+  sys.exit(app.exec())
