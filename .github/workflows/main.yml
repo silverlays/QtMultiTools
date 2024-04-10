@@ -29,5 +29,5 @@ jobs:
     - name: Create Release
       uses: ncipollo/release-action@v1.14.0
       with:
-        artifact: "dist/QtMultiTools.exe"
+        artifacts: "dist/QtMultiTools.exe"
         skipIfReleaseExists: true
