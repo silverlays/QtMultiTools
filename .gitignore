@@ -1,0 +1,16 @@
+compile.bat
+upx.exe
+test.py
+QtMultiTools.7z
+multitools.spec
+data.json
+*.pyo
+.vscode
+.venv
+__pycache__
+tabs/__pycache__
+build
+dist
+make_bin.bat
+QtMultiTools.7z
+*.IGNORE
