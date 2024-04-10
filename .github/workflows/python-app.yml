@@ -5,9 +5,8 @@ name: QtMultiTools
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    tags:
+    - '*'
 
 permissions:
   contents: write
