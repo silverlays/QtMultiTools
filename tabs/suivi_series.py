@@ -1,5 +1,5 @@
-import bson
 import images
+import pickle
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
@@ -264,12 +264,9 @@ class TabWidget(QWidget):
       QMessageBox.critical(self, "Erreur", f"La requête TMDB API à retourné l'erreur suivante:\n\n{e}")
 
   def LoadData(self):
-    file = QFile(tmdb_cache_path)
-    if(file.open(QFile.OpenModeFlag.ReadOnly)):
-      tmpSeries = bson.loads(file.read(file.size()))
-      for tmpSerie in tmpSeries.values(): self.seriesContainer.append(tmpSerie)
-      file.close()
-    else: self.seriesContainer = []
+    self.seriesContainer = []
+    tmpSeries = pickle.load(open(tmdb_cache_path, "rb"))
+    for tmpSerie in tmpSeries: self.seriesContainer.append(tmpSerie)
 
   def ReloadData(self):
     try: del self.selectedSerie
@@ -283,8 +280,8 @@ class TabWidget(QWidget):
 
   def SaveData(self):
     file = QFile(tmdb_cache_path)
-    if(file.open(QFile.OpenModeFlag.WriteOnly)):
-      file.write(bson.encode_array(self.seriesContainer, list()))
+    if file.open(QFile.OpenModeFlag.WriteOnly):
+      pickle.dump(self.seriesContainer, file)
       file.close()
       self.saveStatus.setStyleSheet("color: forestgreen")
       self.saveStatus.setText("Base de données sauvegardée.")
