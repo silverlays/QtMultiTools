@@ -1,1 +1,1 @@
-pyinstaller multitools.pyw --noupx -F -i "images/app.ico" --add-data tabs;tabs --add-data images;images
+pyinstaller multitools.pyw -F -n "QtMultiTools" -i "images/app.ico" --add-data tabs;tabs --add-data images;images
