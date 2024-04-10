@@ -10,7 +10,7 @@ on:
     branches: [ "master" ]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -29,3 +29,5 @@ jobs:
         pip install pyinstaller
         pip install -r requirements.txt
         pyinstaller multitools.pyw --noupx -F --add-data=tabs:tabs --add-data=images:images -i "images/app.ico"
+    - name: Create Release
+    - uses: ncipollo/release-action@v1.14.0
