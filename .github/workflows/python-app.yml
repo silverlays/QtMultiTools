@@ -30,3 +30,6 @@ jobs:
         pyinstaller multitools.pyw --noupx -F --add-data=tabs:tabs --add-data=images:images -i "images/app.ico"
     - name: Create Release
       uses: ncipollo/release-action@v1.14.0
+      with:
+        artifact: "dist/multitools.exe"
+        skipIfReleaseExists: true
