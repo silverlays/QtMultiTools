@@ -3,12 +3,12 @@
 .venv
 __pycache__
 tabs/__pycache__
+*.spec
 *.IGNORE
 
 tmdb.dat
 upx.exe
 test.py
 QtMultiTools.7z
-TVShow Tracker.spec
 build
 dist
