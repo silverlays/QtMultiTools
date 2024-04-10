@@ -31,3 +31,4 @@ jobs:
       with:
         artifacts: "dist/QtMultiTools.exe"
         skipIfReleaseExists: true
+        makeLatest: "latest"
