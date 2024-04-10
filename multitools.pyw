@@ -24,8 +24,7 @@ class App(QMainWindow, Ui_MainWindow):
 
     ### TABS SETUP
     for tabDescription, tabTarget in tabsList.items():
-      module = import_module(f"tabs.{tabTarget}").TabWidget
-      self.tabWidget.addTab(module(), tabDescription)
+      self.tabWidget.addTab(import_module(f"tabs.{tabTarget}").TabWidget(), tabDescription)
 
     self.tabWidget.addTab(self.AboutTab(), "About me...")
 
