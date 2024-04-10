@@ -1,4 +1,4 @@
-name: QtMultiTools
+name: TVShow Tracker
 
 on:
   push:
@@ -25,9 +25,9 @@ jobs:
         pip install pyinstaller
         pip install -r requirements.txt
     - name: Create binaries
-      run: pyinstaller multitools.pyw -F --add-data=tabs:tabs --add-data=images:images -i "images/app.ico" -n "QtMultiTools"
+      run: pyinstaller tv_tracker.pyw -F -n "TVShow Tracker" -i "images/app.ico" --add-data images;images
     - name: Create Release
       uses: ncipollo/release-action@v1.14.0
       with:
-        artifacts: "dist/QtMultiTools.exe"
+        artifacts: "dist/TVShow Tracker.exe"
         skipIfReleaseExists: true
