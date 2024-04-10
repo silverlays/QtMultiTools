@@ -1,12 +1,12 @@
 import base64
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 
 from variables import widgetMargins
 
 
-class Base64(QWidget):
+class TabWidget(QWidget):
   def __init__(self):
     super().__init__()
 
@@ -53,13 +53,12 @@ class Base64(QWidget):
 
     mainLayout = QGridLayout()
     mainLayout.setContentsMargins(widgetMargins)
-    mainLayout.setAlignment(Qt.AlignTop)
+    mainLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
     mainLayout.addWidget(self.groupBox1, 1, 0)
     mainLayout.addWidget(self.groupBox2, 1, 1)
     mainLayout.addWidget(self.groupBox3, 2, 0)
     mainLayout.addWidget(self.groupBox4, 2, 1)
     self.setLayout(mainLayout)
-
 
   def StringToBase64(self):
     try:
@@ -67,13 +66,11 @@ class Base64(QWidget):
     except Exception:
       self.groupBox1Result.setText("")
 
-
   def Base64ToString(self):
     try:    
       self.groupBox2Result.setText(base64.decodebytes(self.groupBox2Base64.toPlainText().encode('utf-8')).decode('utf-8'))
     except Exception:
       self.groupBox2Result.setText("")
-
 
   def OpenFileButton(self):
     def Callback(button, path):
@@ -89,7 +86,6 @@ class Base64(QWidget):
     button.clicked.connect(lambda: Callback(button, QFileDialog().getOpenFileName()[0]))
     return button
   
-
   def SaveFileButton(self):
     def Callback(button, path):
       import io

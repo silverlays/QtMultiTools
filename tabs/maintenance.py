@@ -1,11 +1,11 @@
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 
 from variables import widgetMargins
 
 
-class Maintenance(QWidget):
+class TabWidget(QWidget):
   buttonsFixedWidth = 500
   buttonsFixedHeight = 40
 
@@ -16,17 +16,16 @@ class Maintenance(QWidget):
     groupBoxLayout.addWidget(self.ClearCacheButton())
 
     mainGroupBox = QGroupBox("Fonctions disponibles pour la maintenance du PC")
-    mainGroupBox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+    mainGroupBox.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
     mainGroupBox.setLayout(groupBoxLayout)
 
     mainLayout = QVBoxLayout()
     mainLayout.setContentsMargins(widgetMargins)
-    mainLayout.setAlignment(Qt.AlignTop | Qt.AlignCenter)
+    mainLayout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
     mainLayout.addWidget(mainGroupBox)
 
     self.setLayout(mainLayout)
-  
-  
+    
   def ClearCacheButton(self):
     button = QPushButton("Effacer le cache des icônes du système")
     button.setFixedHeight(self.buttonsFixedHeight)

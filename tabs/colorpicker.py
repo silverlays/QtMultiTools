@@ -1,11 +1,11 @@
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 
 from variables import widgetMargins
 
 
-class ColorPicker(QWidget):
+class TabWidget(QWidget):
   def __init__(self):
     super().__init__()
 
@@ -13,7 +13,7 @@ class ColorPicker(QWidget):
 
     self.colorDialogButton = QPushButton()
     self.colorDialogButton.clicked.connect(self.GetColor)
-    self.colorDialogButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    self.colorDialogButton.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
     self.hexEdit = QLineEdit()
     self.hexEdit.setEnabled(False)
@@ -42,27 +42,24 @@ class ColorPicker(QWidget):
     self.groupBox.setLayout(self.groupBoxLayout)
 
     mainLayout = QGridLayout()
-    mainLayout.setAlignment(Qt.AlignTop)
+    mainLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
     mainLayout.setContentsMargins(widgetMargins)
     mainLayout.addWidget(self.groupBox, 1, 0)
     self.setLayout(mainLayout)
 
-
   def ClipboardButton(self, referTo):
-    import clipboard
+    import pyperclip as clipboard
     button = QPushButton()
     button.setText("C")
     button.setMaximumWidth(25)
     button.clicked.connect(lambda: clipboard.copy(referTo.text()))
     return button
   
-
   def GetColor(self):
     color = QColor(self.colorDialog.getColor())
     palette = QPalette()
-    palette.setColor(QPalette.Window, QColor(0,0,0))
-    palette.setColor(QPalette.Button, color)
-    palette.setColor(QPalette.Background, color)
+    palette.setColor(QPalette.ColorRole.Window, QColor(0,0,0))
+    palette.setColor(QPalette.ColorRole.Button, color)
     self.colorDialogButton.setPalette(palette)
     self.hexEdit.setText(color.name())
     self.rgbEdit.setText(str.format(f"rgb({color.red()}, {color.green()}, {color.blue()})"))
