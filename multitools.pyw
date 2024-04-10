@@ -1,4 +1,3 @@
-from os import error
 import images, sys
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *

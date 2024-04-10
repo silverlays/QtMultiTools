@@ -1,6 +1,6 @@
-from PyQt6.QtCore import *
-from PyQt6.QtGui import *
-from PyQt6.QtWidgets import *
+from PyQt6.QtCore import QMargins
+from PyQt6.QtGui import QColor
+from PyQt6.QtWidgets import QGraphicsDropShadowEffect
 
 widgetMargins = QMargins(200, 20, 200, 20)
 
