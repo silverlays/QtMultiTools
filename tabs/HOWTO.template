@@ -1,11 +1,11 @@
 ### First of all, make a copy of this file and rename it as you like with the <.py> extension ###
-### PyQT MUST BE imported like that ###
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+### PySide6 MUST BE imported like that ###
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+from PySide6.QtCore import *
 
-### Variable <tabDescription> must be present and accessible! ###
-tabDescription = "NAME_OF_THE_TAB"
+### Options 
+### -- TODO --
 
 class TabWidget(QWidget): ### The class MUST BE named <TabWidget> and inherit from "QWidget" to be usable... ###
   ### ... And of course, don't forget to call the QWidget's super class ###
