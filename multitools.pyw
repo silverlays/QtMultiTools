@@ -2,7 +2,7 @@ import images
 import sys
 
 from PySide6.QtCore import *
-from PySide6.QtGui import QFont, QCursor
+from PySide6.QtGui import QFont, QCursor, QAction
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QLabel, QSpacerItem, QCommandLinkButton, QVBoxLayout, QGridLayout, QGroupBox
 
 from importlib import import_module
@@ -14,19 +14,26 @@ from mainwindow_ui import Ui_MainWindow
 buildVersion = "0.7 (Alpha)"
 
 
-class App(QMainWindow, Ui_MainWindow):
+class App(QMainWindow, Ui_MainWindow, QObject):
   def __init__(self):
     super().__init__()
     self.setupUi(self)
+    self.retranslateUi(self)
 
     ### WINDOW SETUP
     self.setWindowTitle(f"{self.windowTitle()} v{buildVersion}")
 
     ### TABS SETUP
     for tabDescription, tabTarget in tabsList.items():
-      self.tabWidget.addTab(import_module(f"tabs.{tabTarget}").TabWidget(), tabDescription)
+      module = import_module(f"tabs.{tabTarget}")
+      self.tabWidget.addTab(module.TabWidget(), tabDescription)
+      
+      if hasattr(module, "options"):
+        menuOptions = self.menuOptions.addMenu(tabDescription)
+        for option in module.options:
+          menuOptions.addAction(option)
 
-    self.tabWidget.addTab(self.AboutTab(), "About me...")
+    self.tabWidget.addTab(self.AboutTab(), "A propos de moi...")
 
     ### STATUS BAR
     self.statusbar.showMessage(f"Modules chargés: {self.tabWidget.count()}")

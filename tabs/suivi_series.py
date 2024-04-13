@@ -8,6 +8,9 @@ import tmdbsimple as tmdb
 from variables import widgetMargins, TextShadow
 
 
+options = []
+
+
 tmdb_key_path = "tmdb.key"
 tmdb_cache_path = "tmdb.dat"
 
@@ -290,3 +293,11 @@ class TabWidget(QWidget):
       self.saveStatus.setStyleSheet("color: indianred")
       self.saveStatus.setText("Une erreur est survenue.")
       self.SaveData = False
+
+
+class TabWidgetOptions(QDialog):
+  def __init__(self) -> None:
+    super().__init__()
+    self.show()
+
+
