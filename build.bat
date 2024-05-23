@@ -1,1 +1,1 @@
-pyinstaller tv_tracker.pyw -F -n "TVShow Tracker" -i "images/app.ico" --add-data images;images
+pyinstaller tv_tracker.pyw -F -n "TVShow Tracker" -i "images/app.ico" --add-data images;images --hidden-import tmdbsimple
