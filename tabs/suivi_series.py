@@ -267,9 +267,13 @@ class TabWidget(QWidget):
       QMessageBox.critical(self, "Erreur", f"La requête TMDB API à retourné l'erreur suivante:\n\n{e}")
 
   def LoadData(self):
-    self.seriesContainer = []
-    tmpSeries = pickle.load(open(tmdb_cache_path, "rb"))
-    for tmpSerie in tmpSeries: self.seriesContainer.append(tmpSerie)
+    try:
+      with open(tmdb_cache_path, "rb") as fp:
+        tmpSeries = pickle.load(fp)
+        for tmpSerie in tmpSeries: self.seriesContainer.append(tmpSerie)
+    except:
+      self.seriesContainer = []
+    
 
   def ReloadData(self):
     try: del self.selectedSerie
@@ -282,14 +286,13 @@ class TabWidget(QWidget):
     except Exception: pass
 
   def SaveData(self):
-    file = QFile(tmdb_cache_path)
-    if file.open(QFile.OpenModeFlag.WriteOnly):
-      pickle.dump(self.seriesContainer, file)
-      file.close()
-      self.saveStatus.setStyleSheet("color: forestgreen")
-      self.saveStatus.setText("Base de données sauvegardée.")
-      self.savedData = True
-    else:
+    try:
+      with open(tmdb_cache_path, "wb") as fp:
+        pickle.dump(self.seriesContainer, fp)
+        self.saveStatus.setStyleSheet("color: forestgreen")
+        self.saveStatus.setText("Base de données sauvegardée.")
+        self.savedData = True
+    except:
       self.saveStatus.setStyleSheet("color: indianred")
       self.saveStatus.setText("Une erreur est survenue.")
       self.SaveData = False
