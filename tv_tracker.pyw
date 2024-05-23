@@ -1,9 +1,10 @@
-import bson
+import pickle
 import images
+import os
 import sys
-from PyQt6.QtGui import *
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import *
+from PySide6.QtGui import QColor, QPixmap, QFont
+from PySide6.QtWidgets import QApplication, QWidget, QLabel, QGroupBox, QPushButton, QLineEdit, QListWidget, QComboBox, QGridLayout, QSizePolicy, QFormLayout, QGraphicsDropShadowEffect, QDialog, QMessageBox, QInputDialog
+from PySide6.QtCore import *
 
 from requests.models import HTTPError
 import tmdbsimple as tmdb
@@ -35,7 +36,7 @@ class TVShowTracker(QWidget):
     self.setFixedSize(1280, 900)
 
     # LEFT SIDE
-    self.seriesListBox = QListWidget()
+    self.seriesListBox = QListWidget(self)
     self.seriesListBox.currentItemChanged.connect(self.SeriesListBox_Changed)
     addSerieButton = QPushButton("Ajouter série")
     addSerieButton.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
@@ -148,9 +149,10 @@ class TVShowTracker(QWidget):
         self.selectedSerie = serie
         self.rightGroupBox.show()
         try:
-          self.lastWatchedSeasonComboBox.disconnect()
-          self.lastWatchedEpisodeComboBox.disconnect()
-        except Exception: pass
+          self.lastWatchedSeasonComboBox.disconnect(self.lastWatchedSeasonComboBoxConnection)
+          self.lastWatchedEpisodeComboBox.disconnect(self.lastWatchedEpisodeComboBoxConnection)
+        except Exception as e:
+          pass
         self.lastWatchedSeasonComboBox.clear()
         self.lastWatchedEpisodeComboBox.clear()
         
@@ -184,8 +186,8 @@ class TVShowTracker(QWidget):
           self.lastWatchedSeasonComboBox.setCurrentIndex(serie['lastWatchedSeason'] - 1)
           self.lastWatchedEpisodeComboBox.addItems("%s" % x for x in range(1, 31))
           self.lastWatchedEpisodeComboBox.setCurrentIndex(serie['lastWatchedEpisode'] - 1)
-        self.lastWatchedSeasonComboBox.currentIndexChanged.connect(self.SeasonComboBox_Changed)
-        self.lastWatchedEpisodeComboBox.currentIndexChanged.connect(self.EpisodeComboBox_Changed)
+        self.lastWatchedSeasonComboBoxConnection = self.lastWatchedSeasonComboBox.currentIndexChanged.connect(self.SeasonComboBox_Changed)
+        self.lastWatchedEpisodeComboBoxConnection = self.lastWatchedEpisodeComboBox.currentIndexChanged.connect(self.EpisodeComboBox_Changed)
     if not self.savedData:
       self.saveStatus.setStyleSheet("color: indianred")
       self.saveStatus.setText("Base de données NON sauvegardée.")
@@ -278,12 +280,15 @@ class TVShowTracker(QWidget):
       QMessageBox.critical(self, "Erreur", f"La requête TMDB API à retourné l'erreur suivante:\n\n{e}")
 
   def LoadData(self):
-    file = QFile(tmdb_cache_path)
-    if(file.open(QFile.OpenModeFlag.ReadOnly)):
-      tmpSeries = bson.loads(file.read(file.size()))
-      for tmpSerie in tmpSeries.values(): self.seriesContainer.append(tmpSerie)
-      file.close()
-    else: self.seriesContainer = []
+    try:
+      with open(tmdb_cache_path, "rb") as fp:
+        tmpSeries: list = pickle.load(fp)
+        for tmpSerie in tmpSeries: self.seriesContainer.append(tmpSerie)
+        pass
+    except Exception as e:
+      QMessageBox.critical(self, "Erreur", f"L'erreur suivante s'est produite:\n\n{e.args[0]}")
+      self.seriesContainer = []
+
 
   def ReloadData(self):
     try: del self.selectedSerie
@@ -295,15 +300,15 @@ class TVShowTracker(QWidget):
     try: self.seriesListBox.setCurrentIndex(0)
     except Exception: pass
 
+
   def SaveData(self):
-    file = QFile(tmdb_cache_path)
-    if(file.open(QFile.OpenModeFlag.WriteOnly)):
-      file.write(bson.encode_array(self.seriesContainer, list()))
-      file.close()
-      self.saveStatus.setStyleSheet("color: forestgreen")
-      self.saveStatus.setText("Base de données sauvegardée.")
-      self.savedData = True
-    else:
+    try:
+      with open(tmdb_cache_path, "wb") as fp:
+        pickle.dump(self.seriesContainer, fp)
+        self.saveStatus.setStyleSheet("color: forestgreen")
+        self.saveStatus.setText("Base de données sauvegardée.")
+        self.savedData = True
+    except:
       self.saveStatus.setStyleSheet("color: indianred")
       self.saveStatus.setText("Une erreur est survenue.")
       self.SaveData = False
